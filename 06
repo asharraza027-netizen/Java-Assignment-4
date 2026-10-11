@@ -1,0 +1,224 @@
+import java.awt.*;
+import java.awt.event.*;
+
+public class StudentRegistrationForm extends Frame implements ActionListener {
+    // Form Components
+    private TextField txtName, txtFatherName, txtAge;
+    private CheckboxGroup genderGroup;
+    private Checkbox chkMale, chkFemale;
+    private Choice courseChoice;
+    private Checkbox chkDrawing, chkSinging, chkMusic, chkOthers;
+    private TextArea txtAddress;
+    private Button btnSave, btnClear;
+
+    public StudentRegistrationForm() {
+        // Frame properties
+        setTitle("User Registration Form");
+        setSize(550, 650);
+        setLocationRelativeTo(null);
+        setBackground(new Color(45, 52, 60)); // Dark slate background matching the image
+        setLayout(new BorderLayout());
+
+        // Main Title
+        Label lblTitle = new Label("Registration Form", Label.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitle.setForeground(Color.YELLOW);
+
+        Panel titlePanel = new Panel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.add(lblTitle);
+        add(titlePanel, BorderLayout.NORTH);
+
+        // Form Panel (Using GridLayout to align labels and inputs)
+        Panel formPanel = new Panel(new GridLayout(7, 2, 10, 20));
+
+        // Font for labels
+        Font labelFont = new Font("Arial", Font.PLAIN, 14);
+
+        // 1. Name
+        Label lblName = new Label("Name");
+        lblName.setForeground(Color.WHITE);
+        lblName.setFont(labelFont);
+        txtName = new TextField(25);
+        formPanel.add(createFlowPanel(lblName, FlowLayout.LEFT));
+        formPanel.add(createFlowPanel(txtName, FlowLayout.LEFT));
+
+        // 2. Father Name
+        Label lblFather = new Label("Father Name");
+        lblFather.setForeground(Color.WHITE);
+        lblFather.setFont(labelFont);
+        txtFatherName = new TextField(25);
+        formPanel.add(createFlowPanel(lblFather, FlowLayout.LEFT));
+        formPanel.add(createFlowPanel(txtFatherName, FlowLayout.LEFT));
+
+        // 3. Age
+        Label lblAge = new Label("Age");
+        lblAge.setForeground(Color.WHITE);
+        lblAge.setFont(labelFont);
+        txtAge = new TextField(25);
+        formPanel.add(createFlowPanel(lblAge, FlowLayout.LEFT));
+        formPanel.add(createFlowPanel(txtAge, FlowLayout.LEFT));
+
+        // 4. Gender (Radio Buttons)
+        Label lblGender = new Label("Gender");
+        lblGender.setForeground(Color.WHITE);
+        lblGender.setFont(labelFont);
+
+        genderGroup = new CheckboxGroup();
+        chkMale = new Checkbox("Male", genderGroup, true);
+        chkFemale = new Checkbox("Female", genderGroup, false);
+        chkMale.setForeground(Color.WHITE);
+        chkFemale.setForeground(Color.WHITE);
+
+        Panel genderPanel = new Panel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        genderPanel.add(chkMale);
+        genderPanel.add(chkFemale);
+        formPanel.add(createFlowPanel(lblGender, FlowLayout.LEFT));
+        formPanel.add(genderPanel);
+
+        // 5. Course (Dropdown)
+        Label lblCourse = new Label("Course");
+        lblCourse.setForeground(Color.WHITE);
+        lblCourse.setFont(labelFont);
+        courseChoice = new Choice();
+        courseChoice.add("Java");
+        courseChoice.add("Python");
+        courseChoice.add("C++");
+        courseChoice.add("Web Development");
+
+        // Wrapper for Choice to control its width
+        Panel coursePanel = new Panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        courseChoice.setPreferredSize(new Dimension(215, 25));
+        coursePanel.add(courseChoice);
+
+        formPanel.add(createFlowPanel(lblCourse, FlowLayout.LEFT));
+        formPanel.add(coursePanel);
+
+        // 6. Hobbies (Checkboxes)
+        Label lblHobbies = new Label("Hobbies");
+        lblHobbies.setForeground(Color.WHITE);
+        lblHobbies.setFont(labelFont);
+
+        chkDrawing = new Checkbox("Drawing");
+        chkSinging = new Checkbox("Singing");
+        chkMusic = new Checkbox("Music");
+        chkOthers = new Checkbox("Others");
+
+        chkDrawing.setForeground(Color.WHITE);
+        chkSinging.setForeground(Color.WHITE);
+        chkMusic.setForeground(Color.WHITE);
+        chkOthers.setForeground(Color.WHITE);
+
+        Panel hobbiesPanel = new Panel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        hobbiesPanel.add(chkDrawing);
+        hobbiesPanel.add(chkSinging);
+        hobbiesPanel.add(chkMusic);
+        hobbiesPanel.add(chkOthers);
+
+        formPanel.add(createFlowPanel(lblHobbies, FlowLayout.LEFT));
+        formPanel.add(hobbiesPanel);
+
+        // 7. Address (Text Area)
+        Label lblAddress = new Label("Address");
+        lblAddress.setForeground(Color.WHITE);
+        lblAddress.setFont(labelFont);
+        txtAddress = new TextArea(3, 30);
+        formPanel.add(createFlowPanel(lblAddress, FlowLayout.LEFT));
+        formPanel.add(createFlowPanel(txtAddress, FlowLayout.LEFT));
+
+        // Add form padding
+        Panel formWrapper = new Panel(new FlowLayout(FlowLayout.CENTER));
+        formWrapper.add(formPanel);
+        add(formWrapper, BorderLayout.CENTER);
+
+        // Buttons Panel
+        Panel buttonPanel = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+
+        btnSave = new Button("Save Details");
+        btnSave.setBackground(Color.BLUE);
+        btnSave.setForeground(Color.WHITE);
+        btnSave.addActionListener(this);
+
+        btnClear = new Button("Clear All");
+        btnClear.setBackground(Color.RED);
+        btnClear.setForeground(Color.WHITE);
+        btnClear.addActionListener(this);
+
+        buttonPanel.add(btnSave);
+        buttonPanel.add(btnClear);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Window Closing Event
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        setVisible(true);
+    }
+
+    // Helper method to wrap components in a FlowLayout panel
+    private Panel createFlowPanel(Component comp, int alignment) {
+        Panel panel = new Panel(new FlowLayout(alignment, 0, 0));
+        panel.add(comp);
+        return panel;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnSave) {
+            showSuccessDialog();
+        } else if (e.getSource() == btnClear) {
+            clearForm();
+        }
+    }
+
+    private void showSuccessDialog() {
+        Dialog dialog = new Dialog(this, "Registration Successful", true);
+        dialog.setSize(350, 250);
+        dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        dialog.setLocationRelativeTo(this);
+
+        String hobbies = "";
+        if (chkDrawing.getState()) hobbies += "Drawing ";
+        if (chkSinging.getState()) hobbies += "Singing ";
+        if (chkMusic.getState()) hobbies += "Music ";
+        if (chkOthers.getState()) hobbies += "Others ";
+        if (hobbies.isEmpty()) hobbies = "None";
+
+        Checkbox selectedGender = genderGroup.getSelectedCheckbox();
+        String gender = (selectedGender != null) ? selectedGender.getLabel() : "Not specified";
+
+        dialog.add(new Label("Registration Successful!", Label.CENTER));
+        dialog.add(new Label("Name: " + txtName.getText()));
+        dialog.add(new Label("Father Name: " + txtFatherName.getText()));
+        dialog.add(new Label("Age: " + txtAge.getText()));
+        dialog.add(new Label("Gender: " + gender));
+        dialog.add(new Label("Course: " + courseChoice.getSelectedItem()));
+        dialog.add(new Label("Hobbies: " + hobbies));
+
+        Button btnOk = new Button("OK");
+        btnOk.addActionListener(event -> dialog.dispose());
+        dialog.add(btnOk);
+
+        dialog.setVisible(true);
+    }
+
+    private void clearForm() {
+        txtName.setText("");
+        txtFatherName.setText("");
+        txtAge.setText("");
+        genderGroup.setSelectedCheckbox(chkMale);
+        courseChoice.select(0);
+        chkDrawing.setState(false);
+        chkSinging.setState(false);
+        chkMusic.setState(false);
+        chkOthers.setState(false);
+        txtAddress.setText("");
+    }
+
+    public static void main(String[] args) {
+        new StudentRegistrationForm();
+    }
+}
