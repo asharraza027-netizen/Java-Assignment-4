@@ -1,0 +1,133 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CalculatorForm extends JFrame implements ActionListener {
+    private JTextField displayField;
+    private double num1 = 0;
+    private String operator = "";
+    private boolean isOperatorClicked = false;
+
+    public CalculatorForm() {
+        setTitle("c...");
+        setSize(320, 360);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new Color(0, 0, 204)); // Bright blue background
+        setLayout(null);
+
+        // Display screen at top
+        displayField = new JTextField();
+        displayField.setBounds(40, 20, 225, 30);
+        displayField.setFont(new Font("Arial", Font.BOLD, 16));
+        displayField.setEditable(false);
+        displayField.setBackground(Color.WHITE);
+        displayField.setHorizontalAlignment(JTextField.LEFT);
+        add(displayField);
+
+        // 4x4 Button grid layout
+        String[][] buttonLabels = {
+            {"+", "1", "2", "3"},
+            {"-", "4", "5", "6"},
+            {"*", "7", "8", "9"},
+            {"/", ".", "0", "C"}
+        };
+
+        int startX = 20;
+        int startY = 65;
+        int btnWidth = 55;
+        int btnHeight = 35;
+        int gapX = 12;
+        int gapY = 10;
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                JButton btn = new JButton(buttonLabels[row][col]);
+                btn.setBounds(startX + col * (btnWidth + gapX), startY + row * (btnHeight + gapY), btnWidth, btnHeight);
+                btn.setFont(new Font("Arial", Font.BOLD, 15));
+                btn.setBackground(new Color(225, 225, 225));
+                btn.setFocusPainted(false);
+                btn.addActionListener(this);
+                add(btn);
+            }
+        }
+
+        // Bottom '=' button centered underneath grid
+        JButton btnEqual = new JButton("=");
+        btnEqual.setBounds(118, startY + 4 * (btnHeight + gapY) + 5, 60, 35);
+        btnEqual.setFont(new Font("Arial", Font.BOLD, 16));
+        btnEqual.setBackground(new Color(225, 225, 225));
+        btnEqual.setFocusPainted(false);
+        btnEqual.addActionListener(this);
+        add(btnEqual);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        if (command.equals("C")) {
+            displayField.setText("");
+            num1 = 0;
+            operator = "";
+            isOperatorClicked = false;
+        } else if (command.equals("+") || command.equals("-") || command.equals("*") || command.equals("/")) {
+            if (!displayField.getText().isEmpty()) {
+                num1 = Double.parseDouble(displayField.getText());
+                operator = command;
+                displayField.setText(formatNumber(num1) + operator);
+                isOperatorClicked = true;
+            }
+        } else if (command.equals("=")) {
+            if (!operator.isEmpty()) {
+                String fullText = displayField.getText();
+                int opIndex = fullText.lastIndexOf(operator);
+                
+                if (opIndex != -1 && opIndex < fullText.length() - 1) {
+                    double num2 = Double.parseDouble(fullText.substring(opIndex + 1));
+                    double result = 0;
+
+                    switch (operator) {
+                        case "+": result = num1 + num2; break;
+                        case "-": result = num1 - num2; break;
+                        case "*": result = num1 * num2; break;
+                        case "/":
+                            if (num2 != 0) {
+                                result = num1 / num2;
+                            } else {
+                                displayField.setText("Cannot divide by 0");
+                                return;
+                            }
+                            break;
+                    }
+
+                    // Formats expression to match expected output: "52*4=208.0"
+                    displayField.setText(formatNumber(num1) + operator + formatNumber(num2) + "=" + result);
+                    operator = "";
+                    isOperatorClicked = false;
+                }
+            }
+        } else {
+            // Digits and decimal point
+            if (displayField.getText().contains("=")) {
+                displayField.setText("");
+            }
+            displayField.setText(displayField.getText() + command);
+        }
+    }
+
+    // Helper method to display integers cleanly without trailing '.0' before calculation
+    private String formatNumber(double num) {
+        if (num == (long) num) {
+            return String.format("%d", (long) num);
+        }
+        return String.valueOf(num);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(CalculatorForm::new);
+    }
+}
